@@ -7,8 +7,8 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'haml'
 require 'pony'
-if File.exists?('config.rb')
-  require 'config.rb'
+if File.exists?('config/config.rb')
+  require 'config/config.rb'
 end
 
 DataMapper.setup(:default, "sqlite3:///#{Dir.pwd}/db/zuptime.db")
@@ -118,7 +118,7 @@ def check_sites
         :body => body
         
       }
-      if SMTP_SETTING
+      if defined?(SMTP_SETTING)
         pony_params[:via] = :smtp
         pony_params[:smtp] = SMTP_SETTING
       end
