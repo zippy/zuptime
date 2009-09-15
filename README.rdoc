@@ -13,12 +13,13 @@ The flowplace is standard capistrano app.  It can be installed with:
   ruby app.rb
 
 == Prerequisites
-  You must install the following gems for  zuptime to work:
+
+You must install the following gems for zuptime to work:
   
   sudo gem install sinatra datamapper haml sqlite3 pony
 
 == License
 
-The flowplace is released under the GPL license.
+zuptime is released under the MIT license.
 
 Copyright (c) 2009 Eric Harris-Braun
