@@ -10,6 +10,7 @@ require 'pony'
 if File.exists?('config/config.rb')
   require 'config/config.rb'
 end
+CMD = '/usr/bin/curl' unless defined?(CMD)
 
 DataMapper.setup(:default, "sqlite3:///#{Dir.pwd}/db/zuptime.db")
 
@@ -100,7 +101,7 @@ end
 
 def check_sites
   Site.all.each do |site|
-    site.last_result = `/usr/bin/curl #{site.url}`
+    site.last_result = `#{CMD} #{site.url}`
     site.last_check = Time.now
     if 
       status = $? == 0 ? 'up' : 'down'
