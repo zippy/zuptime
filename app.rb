@@ -8,7 +8,7 @@ if File.exists?('config.rb')
   require 'config.rb'
 end
 
-DataMapper.setup(:default, "sqlite3:///#{Dir.pwd}/zuptime.db")
+DataMapper.setup(:default, "sqlite3:///#{Dir.pwd}/db/zuptime.db")
 
 class Site
   include DataMapper::Resource

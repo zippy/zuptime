@@ -1,2 +1,3 @@
 config.rb
 config/deploy.rb
+db/*
