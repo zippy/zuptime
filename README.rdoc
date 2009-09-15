@@ -1,0 +1,24 @@
+= zuptime-- a simple web app for checking web-site status
+
+== Description
+
+Zuptime allows you to quickly enter in a list of websites to periodically check the statuses of.  You can configure the e-mail notification list on a per-webiste basis.
+
+== Installation
+
+The flowplace is standard capistrano app.  It can be installed with:
+
+  git clone git://github.com/zippy/zuptime.git zuptime
+  cd zuptime
+  ruby app.rb
+
+== Prerequisites
+  You must install the following gems for  zuptime to work:
+  
+  sudo gem install sinatra datamapper haml sqlite3 pony
+
+== License
+
+The flowplace is released under the GPL license.
+
+Copyright (c) 2009 Eric Harris-Braun
