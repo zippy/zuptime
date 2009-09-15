@@ -1,7 +1,10 @@
 # myapp.rb
 require 'rubygems'
 require 'sinatra'
-require "datamapper"
+require 'dm-core'
+require 'dm-timestamps'
+require 'dm-validations'
+require 'dm-aggregates'
 require 'haml'
 require 'pony'
 if File.exists?('config.rb')
