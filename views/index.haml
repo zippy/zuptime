@@ -1,0 +1,20 @@
+%a{:href=>'/sites/new'}add a site
+%br
+%a{:href=>'/sites/check'}check all sites now
+
+- @sites.each do |site|
+  %p
+    %a{:href=>"/sites/#{site.id}"}
+      =site.url
+    &nbsp;
+    - if site.last_check
+      =site.current_status
+      since 
+      =standard_date_time(site.status_changed)
+      (last check 
+      =standard_date_time(site.last_check)
+      )
+    - else
+      Not checked
+    &nbsp;
+    = delete_link(site,'/sites','X')
