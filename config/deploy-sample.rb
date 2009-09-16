@@ -22,7 +22,7 @@ role :db, domain, :primary => true
 #========================
 after 'deploy:symlink', :roles => :app do
   run "ln -nfs #{shared_path}/db #{release_path}/db" 
-  run "ln -nfs #{shared_path}/config #{release_path}/config" 
+  run "ln -nfs #{shared_path}/config/config.rb #{release_path}/config/config.rb" 
 end
 
 after 'deploy:setup', :except => { :no_release => true } do
