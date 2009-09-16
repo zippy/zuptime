@@ -6,7 +6,7 @@ Zuptime is a little sinatra app that allows you to quickly enter in a list of we
 
 == Simple Installation
 
-The flowplace is sinatra app.  To install it, just clone the app and run it like this:
+zuptime is sinatra app.  To install it, just clone the app from github and run it like this:
 
   git clone git://github.com/zippy/zuptime.git zuptime
   cd zuptime
