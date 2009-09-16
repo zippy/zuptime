@@ -2,22 +2,64 @@
 
 == Description
 
-Zuptime allows you to quickly enter in a list of websites to periodically check the statuses of.  You can configure the e-mail notification list on a per-webiste basis.
+Zuptime is a little sinatra app that allows you to quickly enter in a list of websites that you want to monitor.  You can configure the e-mail notification list on a per-webiste basis.
 
-== Installation
+== Simple Installation
 
-The flowplace is standard capistrano app.  It can be installed with:
+The flowplace is sinatra app.  To install it, just clone the app and run it like this:
 
   git clone git://github.com/zippy/zuptime.git zuptime
   cd zuptime
   ruby app.rb
+  
+Then you should be able to access it by entering:
+
+  http://localhost:4567/
+  
+in your web-browser.
+
+The first time zuptime runs it will bring up a configuration screen where you can enter the smtp configuration information.
+
+== Deployment to passenger server with Capistrano 
+
+Included in the repository is a config.ru file suitable for deployment under passenger as well as a sample deploy.rb file for use with capistrano.  Rename the config/deploy-sample.rb file to deploy.rb, edit the file appropriately for the settings on your server and then use:
+
+  cap deploy:setup
+  cap deploy
+
+to deploy zuptime to your server.
+
+[add more here about setting up the apache/nginx config files...]
 
 == Prerequisites
 
 You must install the following gems for zuptime to work:
   
-  sudo gem install sinatra datamapper haml sqlite3 pony
+  sudo gem install sinatra datamapper haml sqlite3 pony yaml
 
+You also need to have a program like curl or wget installed on your machine, which zuptime uses to do the actual fetching of the web page specified.
+
+By default zuptime assumes that you have curl installed at:
+  
+  /usr/bin/curl
+  
+If curl is installed some place else or you are using wget (i.e. at /usr/local/bin/wget) then create a file
+
+  config/config.rb
+
+with the contents:
+
+  CMD = "/usr/local/bin/wget"
+  
+== CRON
+
+You will want to add a cron job on some machine you have access to have zuptime check all the sites periodically.
+For example a cron entry of:
+
+0,10,20,30,40,50 * * * * /usr/local/bin/curl http://localhost:4567/sites/check
+
+will update the status of all your sites every 10 minutes
+  
 == License
 
 zuptime is released under the MIT license.
