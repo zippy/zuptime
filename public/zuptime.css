@@ -47,6 +47,11 @@ img {
   color: #A6AAAB;
 }
 
+#bar {
+	height:4px;
+  background: gray;
+}
+
 #nav {
   font-size: 11pt;
   margin:0px 0px 0px 0px;
