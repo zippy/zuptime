@@ -7,11 +7,11 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'haml'
 require 'pony'
+require 'yaml'
 if File.exists?('config/config.rb')
   require 'config/config.rb'
 end
 CMD = '/usr/bin/curl' unless defined?(CMD)
-
 DataMapper.setup(:default, "sqlite3:///#{Dir.pwd}/db/zuptime.db")
 
 class Site
@@ -28,8 +28,41 @@ class Site
   validates_is_unique :url
 end
 
+class Configure
+  include DataMapper::Resource
+  property :id, Serial
+  property :smtp_settings, Text
+end
+
 Site.auto_upgrade!
+Configure.auto_upgrade!
 #Site.auto_migrate!
+
+before do
+  if request.path_info !~ /\/config/
+    @config = Configure.get(1)
+    if !@config
+      redirect '/config/edit' if !@config
+      halt
+    end
+  end
+end
+
+get '/config/edit' do
+  @config = Configure.get(1)
+  @config ||= Configure.new
+  @smtp = @config.smtp_settings
+  @smtp = YAML.load(@smtp) if !@smtp.nil?
+  @smtp ||= {}
+  haml :config
+end
+
+post '/config/set' do
+  @config = Configure.get(1)
+  @config ||= Configure.new
+  @config.smtp_settings = params[:smtp].to_yaml
+  @config.save ? redirect('/') : @config.errors.inspect
+end
 
 get '/' do
   @sites = Site.all
@@ -96,6 +129,18 @@ helpers do
   end
   def standard_date_time(time)
     time.asctime
+  end
+  def options_for_select(options,value)
+    options.collect do |o|
+      case o
+      when Hash
+        txt = o.keys[0]
+        val = o[txt]
+        %Q|<option #{value==val ? 'selected' : ''} value="#{val}">#{txt}</option>|
+      else
+        %Q|<option #{value==o ? 'selected' : ''} value="#{o}">#{o}</option>|
+      end
+    end.join ''
   end
 end
 

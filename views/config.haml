@@ -1,0 +1,25 @@
+%form{:action=>'/config/set',:method=>'post'}
+  #smtp_config
+    %h3 SMTP configuration
+    
+    %label{:for=>'smtp[host]'} host
+    %input{:name=>'smtp[host]',:value=>@smtp['host']}
+    %br
+    %label{:for=>'smtp[port]'} port
+    %input{:name=>'smtp[port]',:value=>@smtp['port']}
+    %br
+    %label{:for=>'smtp[user]'} user
+    %input{:name=>'smtp[user]',:value=>@smtp['user']}
+    %br
+    %label{:for=>'smtp[password]'} password
+    %input{:type=>'password',:name=>'smtp[password]',:value=>@smtp['password']}
+    %br
+    %label{:for=>'smtp[auth]'} auth
+    %select{:name=>'smtp[auth]'}
+      =options_for_select([{'no_auth'=>nil},'plain', 'login', 'cram_md5'],@smtp['auth'])
+    %br
+    %label{:for=>'smtp[domain]'} domain
+    %input{:name=>'smtp[domain]',:value=>@smtp['domain']}
+    (for EHLO)
+  %p
+    %input{:type=>'submit'}
