@@ -2,8 +2,21 @@
   .error= @error
 %form{:action=>'/config/set',:method=>'post'}
   #smtp_config
+
+    %h3 Security
+    %label{:for=>'user'} user
+    %input{:name=>'user',:value=>@config.user,:size=>20}
+    %br
+    %label{:for=>'password'} password
+    %input{:type=>'password',:name=>'password',:value=>@config.password,:size=>20}
+    %br
+    %label{:for=>'site_check_secret'} site check secret
+    %input{:name=>'site_check_secret',:value=>@config.site_check_secret,:size=>20}
+    (use this when triggering a site check from a cron, i.e.
+    %code="curl http://#{request.host+(request.port != 80 ? ':'+request.port.to_s : '')}/sites/check?secret=#{@config.site_check_secret}"
+    )
+
     %h3 SMTP configuration
-    
     %label{:for=>'smtp[host]'} host
     %input{:name=>'smtp[host]',:value=>@smtp['host'],:size=>50}
     %br
@@ -24,7 +37,7 @@
     %input{:name=>'smtp[domain]',:value=>@smtp['domain'],:size=>50}
     (for EHLO)
 
-    %h3 Site Checking
+    %h3 Site Checking (for down sites)
     %label{:for=>'retries'} retries
     %input{:name=>'retries',:value=>@config.retries,:size=>3}
     %br
@@ -36,4 +49,4 @@
     %input{:name=>'notify_from',:value=>@config.notify_from,:size=>50}
     
   %p
-    %input{:type=>'submit'}
+    %input{:type=>'submit',:value=>'Submit'}

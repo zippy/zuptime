@@ -39,7 +39,11 @@ class Configure
   property :notify_from, String
   property :retries, String, :default => 3
   property :sleep, String, :default => 1
+  property :user, String, :default => 'admin'
+  property :password, String
+  property :site_check_secret, String, :default => 'change_me'
   validates_is_number :retries,:sleep
+  validates_present :user,:password
 end
 
 Site.auto_upgrade!
@@ -50,14 +54,17 @@ before do
   if request.path_info !~ /\/config/
     @config = Configure.get(1)
     if !@config
-      redirect '/config/edit' if !@config
+      redirect '/config/edit'
       halt
     end
   end
+  @config ||= Configure.get(1)
+  puts "@config.site_check_secret="+@config.site_check_secret.inspect
+  skip_protection = @config.blank? || @config.password.blank? || (@checking_sites_with_secret = ((request.path_info == '/sites/check') && @config.site_check_secret && (params[:secret] == @config.site_check_secret)))
+  protected! if !skip_protection
 end
 
 get '/config/edit' do
-  @config = Configure.get(1)
   @config ||= Configure.new
   @smtp = @config.smtp_settings
   @smtp = YAML.load(@smtp) if !@smtp.nil?
@@ -66,12 +73,14 @@ get '/config/edit' do
 end
 
 post '/config/set' do
-  @config = Configure.get(1)
   @config ||= Configure.new
   @config.smtp_settings = params[:smtp].to_yaml
   @config.notify_from = params[:notify_from]
   @config.sleep = params[:sleep]
   @config.retries = params[:retries]
+  @config.user = params[:user]
+  @config.password = params[:password]
+  @config.site_check_secret = params[:site_check_secret]
   if @config.save
     redirect('/')
   else
@@ -95,7 +104,11 @@ end
 
 get '/sites/check' do
   check_sites
-  redirect '/'
+  if @checking_sites_with_secret
+    'ok'
+  else
+    redirect '/'
+  end
 end
 
 get '/sites/:id' do
@@ -191,6 +204,17 @@ helpers do
   def render_error(error_text)
     @error = error_text
     haml :error
+  end
+
+  def protected!
+    response['WWW-Authenticate'] = %(Basic realm="Testing HTTP Auth") and \
+    throw(:halt, [401, "Not authorized\n"]) and \
+    return unless authorized?
+  end
+
+  def authorized?
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [@config.user, @config.password]
   end
 end
 
