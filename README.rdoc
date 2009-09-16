@@ -2,11 +2,12 @@
 
 == Description
 
-Zuptime is a little sinatra app that allows you to quickly enter in a list of websites that you want to monitor.  You can configure the e-mail notification list on a per-website basis.
+Zuptime is a little sinatra app that allows you to quickly enter in a list of websites that you want to monitor.  You can configure the e-mail notification list on a per-website basis.  Configuration is "in-app", i.e. there
+aren't any config files to fiddle with.
 
-== Simple Installation
+== Quickstart
 
-zuptime is a sinatra app.  To install it, just clone the app from github and run it like this:
+To install zuptime just clone the app from github and run it like this:
 
   git clone git://github.com/zippy/zuptime.git zuptime
   cd zuptime
@@ -18,9 +19,9 @@ Then you should be able to access it by entering:
   
 in your web-browser.
 
-The first time zuptime runs it will bring up a configuration screen where you can enter the smtp configuration information for outgoing e-mail notification, as well as other settings.
+The first time zuptime runs it will bring up a configuration screen where you can enter the smtp configuration information for outgoing e-mail notification, security, and other settings.
 
-== Deployment to passenger server with Capistrano 
+== Slower start: deployment to passenger server with Capistrano 
 
 Included in the repository is a config.ru file suitable for deployment under passenger as well as a sample deploy.rb file for use with capistrano.  Rename the config/deploy-sample.rb file to deploy.rb, edit the file appropriately for the settings on your server and then use:
 
@@ -43,9 +44,11 @@ You must install the following gems for zuptime to work:
 You will want to add a cron job on some machine you have access to have zuptime check all the sites periodically.
 For example a cron entry of:
 
-  0,10,20,30,40,50 * * * * /usr/local/bin/curl http://localhost:4567/sites/check
+  0,10,20,30,40,50 * * * * /usr/local/bin/curl http://localhost:4567/sites/check?secret=your_secret_here
 
-will update the status of all your sites every 10 minutes
+will update the status of all your sites every 10 minutes.  
+
+Note that in the configuration screen you can set the secret which ensures that only you can trigger the site check.
   
 == License
 
