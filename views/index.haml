@@ -14,4 +14,6 @@
     - else
       Not checked
     &nbsp;
-    = delete_link(site,'/sites','X')
+    %a{:href=>"/sites/#{site.id}/check"} check
+    &nbsp;
+    = delete_link(site,'/sites','remove')

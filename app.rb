@@ -88,6 +88,16 @@ get '/sites/:id' do
   end
 end
 
+get '/sites/:id/check' do
+  @site = Site.get(params[:id])
+  if @site
+    check_site(@site)
+    redirect '/'
+  else
+    'not found'
+  end
+end
+
 put '/sites' do
   @site = Site.get(params[:id])
   if @site
@@ -146,35 +156,39 @@ end
 
 def check_sites
   Site.all.each do |site|
-    site.last_result = `#{CMD} #{site.url}`
-    site.last_check = Time.now
-    if 
-      status = $? == 0 ? 'up' : 'down'
-    else
-      status = 'down'
-    end
-    if site.current_status != status
-      site.current_status = status
-      site.status_changed = site.last_check
-      body = "Site Status Changed: #{status} (#{site.url})\n"
-      body += "\nstatus from curl was #{$?}" if status == 'down'
-      pony_params = {
-        :from => 'zuptime@harris-braun.com',
-        :subject => "Site Status Changed: #{status} (#{site.url})",
-        :body => body
-        
-      }
-      @smtp = @config.smtp_settings
-      @smtp = YAML.load(@smtp) if !@smtp.nil?
-      @smtp.keys.each {|k| @smtp[k.to_sym] = @smtp[k]}
-      @smtp['auth'] = @smtp['auth'].to_sym if @smtp['auth']
-      if @smtp
-        pony_params[:via] = :smtp
-        pony_params[:smtp] = @smtp
-      end
-      pony_params[:to] = site.notify
-      Pony.mail(pony_params)
-    end
-    site.save
+    check_site(site)
   end
+end
+
+def check_site(site)
+  site.last_result = `#{CMD} #{site.url}`
+  site.last_check = Time.now
+  if 
+    status = $? == 0 ? 'up' : 'down'
+  else
+    status = 'down'
+  end
+  if site.current_status != status
+    site.current_status = status
+    site.status_changed = site.last_check
+    body = "Site Status Changed: #{status} (#{site.url})\n"
+    body += "\nstatus was #{$?}" if status == 'down'
+    pony_params = {
+      :from => 'zuptime@harris-braun.com',
+      :subject => "Site Status Changed: #{status} (#{site.url})",
+      :body => body
+      
+    }
+    @smtp = @config.smtp_settings
+    @smtp = YAML.load(@smtp) if !@smtp.nil?
+    @smtp.keys.each {|k| @smtp[k.to_sym] = @smtp[k]}
+    @smtp['auth'] = @smtp['auth'].to_sym if @smtp['auth']
+    if @smtp
+      pony_params[:via] = :smtp
+      pony_params[:smtp] = @smtp
+    end
+    pony_params[:to] = site.notify
+    Pony.mail(pony_params)
+  end
+  site.save
 end
