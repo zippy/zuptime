@@ -1,8 +1,8 @@
-= zuptime-- a simple web app for checking web-site status
+= zuptime-- a simple web app for checking web-site status and uptime
 
 == Description
 
-Zuptime is a little sinatra app that allows you to quickly enter in a list of websites that you want to monitor.  You can configure the e-mail notification list on a per-webiste basis.
+Zuptime is a little sinatra app that allows you to quickly enter in a list of websites that you want to monitor.  You can configure the e-mail notification list on a per-website basis.
 
 == Simple Installation
 
@@ -18,7 +18,7 @@ Then you should be able to access it by entering:
   
 in your web-browser.
 
-The first time zuptime runs it will bring up a configuration screen where you can enter the smtp configuration information.
+The first time zuptime runs it will bring up a configuration screen where you can enter the smtp configuration information for outgoing e-mail notification, as well as other settings.
 
 == Deployment to passenger server with Capistrano 
 
