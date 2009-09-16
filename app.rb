@@ -194,13 +194,13 @@ helpers do
   end
 end
 
-def check_sites
+def check_sites(notify=true)
   Site.all.each do |site|
-    check_site(site)
+    check_site(site,notify)
   end
 end
 
-def check_site(site)
+def check_site(site,notify=false)
   site.last_check = Time.now
   status = result = nil
   (1..@config.retries.to_i).each do |x|
@@ -218,7 +218,7 @@ def check_site(site)
   if site.current_status != status
     site.current_status = status
     site.status_changed = site.last_check
-    notify_change(site)
+    notify_change(site) if notify
   end
   raise "couldn't save" if !site.save
 end
