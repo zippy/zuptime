@@ -164,9 +164,13 @@ def check_sites
         :body => body
         
       }
-      if defined?(SMTP_SETTING)
+      @smtp = @config.smtp_settings
+      @smtp = YAML.load(@smtp) if !@smtp.nil?
+      @smtp.keys.each {|k| @smtp[k.to_sym] = @smtp[k]}
+      @smtp['auth'] = @smtp['auth'].to_sym if @smtp['auth']
+      if @smtp
         pony_params[:via] = :smtp
-        pony_params[:smtp] = SMTP_SETTING
+        pony_params[:smtp] = @smtp
       end
       pony_params[:to] = site.notify
       Pony.mail(pony_params)
