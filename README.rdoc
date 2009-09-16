@@ -37,19 +37,6 @@ You must install the following gems for zuptime to work:
   
   sudo gem install sinatra datamapper haml sqlite3 pony yaml
 
-You also need to have a program like curl or wget installed on your machine, which zuptime uses to do the actual fetching of the web page specified.
-
-By default zuptime assumes that you have curl installed at:
-  
-  /usr/bin/curl
-  
-If curl is installed some place else or you are using wget (i.e. at /usr/local/bin/wget) then create a file
-
-  config/config.rb
-
-with the contents:
-
-  CMD = "/usr/local/bin/wget"
   
 == CRON
 
