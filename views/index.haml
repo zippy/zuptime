@@ -1,13 +1,10 @@
-%a{:href=>'/sites/new'}add a site
-%br
-%a{:href=>'/sites/check'}check all sites now
-
 - @sites.each do |site|
   %p
     %a{:href=>"/sites/#{site.id}"}
       =site.url
     &nbsp;
     - if site.last_check
+      %img{:src=>"/images/#{site.current_status}.png"}
       =site.current_status
       since 
       =standard_date_time(site.status_changed)

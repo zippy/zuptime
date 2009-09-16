@@ -1,0 +1,18 @@
+%html
+  %head
+    %title zuptime
+    %link{:href=>"/zuptime.css",:media=>"all",:rel=>"stylesheet",:type=>"text/css"}
+  %body
+    #header
+      %ul#nav
+        %li 
+          %a{:href=>'/'}sites
+        %li 
+          %a{:href=>'/sites/new'}add a site
+        %li 
+          %a{:href=>'/sites/check'}check all sites now
+        %li           
+          %a{:href=>'/config/edit'}edit configuration
+      %p zuptime!
+    #contents
+      = yield
